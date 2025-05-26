@@ -1,0 +1,785 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Graphic Designer Portfolio</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;600&display=swap');
+  body, html {
+    margin: 0;
+    padding: 0;
+    font-family: 'Poppins', sans-serif;
+    background: #f5f5f5;
+    color: #000080;
+    overflow-x: hidden;
+    min-height: 100vh;
+  }
+  header {
+    position: relative;
+    background: #000080 url('https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=1350&q=80') no-repeat center center/cover;
+    height: 160px;
+    color: white;
+    display: flex;
+    align-items: center;
+    padding-left: 1.5rem;
+    box-shadow: 0 3px 10px rgba(0,0,0,0.4);
+  }
+  header h1 {
+    font-weight: 600;
+    font-size: 2.2rem;
+    user-select: none;
+    margin: 0;
+  }
+  #topbar-image {
+    position: absolute;
+    right: 1.5rem;
+    top: 50%;
+    transform: translateY(-50%);
+    height: 120px;
+    width: 160px;
+    object-fit: cover;
+    border-radius: 12px;
+    box-shadow: 0 0 10px #000080aa;
+  }
+
+  main {
+    max-width: 900px;
+    margin: 2rem auto 5rem;
+    padding: 0 1rem;
+  }
+
+  /* Profile Section */
+  #profile {
+    display: flex;
+    gap: 1.6rem;
+    align-items: center;
+    margin-bottom: 3rem;
+    background: white;
+    border-radius: 12px;
+    padding: 1.6rem;
+    box-shadow: 0 1px 8px rgba(0,0,128,0.15);
+  }
+  #profile-pic {
+    border-radius: 50%;
+    border: 4px solid #000080;
+    height: 150px;
+    width: 150px;
+    object-fit: cover;
+    flex-shrink: 0;
+  }
+  #profile-text {
+    font-size: 1.25rem;
+    line-height: 1.5;
+    font-weight: 300;
+    color: #000080dd;
+  }
+
+  /* Projects Section */
+  #projects-section {
+    background: white;
+    border-radius: 12px;
+    padding: 1rem 1.2rem 2rem;
+    box-shadow: 0 1px 8px rgba(0,0,128,0.15);
+  }
+  #projects-section h2 {
+    color: #000080;
+    margin-bottom: 1rem;
+    font-weight: 600;
+  }
+  #projects-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill,minmax(160px,1fr));
+    gap: 1rem;
+  }
+  .project-card {
+    cursor: pointer;
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0 0 6px #00008066;
+    transition: transform 0.2s ease;
+    position: relative;
+  }
+  .project-card:hover {
+    transform: scale(1.05);
+    z-index: 1;
+  }
+  .project-card img {
+    width: 100%;
+    height: 140px;
+    object-fit: cover;
+    display: block;
+  }
+
+  /* Modal for big image */
+  #modal {
+    position: fixed;
+    top:0; left:0; right:0; bottom:0;
+    background: rgba(0,0,128,0.85);
+    display: none;
+    justify-content: center;
+    align-items: center;
+    z-index: 4000;
+  }
+  #modal img {
+    max-width: 90vw;
+    max-height: 90vh;
+    border-radius: 12px;
+    box-shadow: 0 0 20px #000080cc;
+    border: 4px solid #000080;
+  }
+  #modalClose {
+    position: absolute;
+    top: 14px;
+    right: 20px;
+    font-size: 2.4rem;
+    color: white;
+    cursor: pointer;
+    user-select: none;
+    font-weight: 700;
+    text-shadow: 0 0 6px #000000cc;
+  }
+
+  /* Admin Panel button */
+  #admin-toggle-btn {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    background: #000080;
+    color: white;
+    border: none;
+    border-radius: 50%;
+    width: 56px;
+    height: 56px;
+    box-shadow: 0 4px 10px #000080bb;
+    cursor: pointer;
+    font-weight: 700;
+    font-size: 22px;
+    z-index: 5000;
+    user-select: none;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  #admin-toggle-btn:hover {
+    background: #000066;
+  }
+
+  /* Admin Panel */
+  #admin-panel {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    background: white;
+    width: 360px;
+    max-width: 95vw;
+    max-height: 90vh;
+    overflow-y: auto;
+    border-radius: 12px;
+    box-shadow: 0 0 10px #000080cc;
+    padding: 1rem 1rem 2rem;
+    z-index: 6000;
+    display: none;
+    flex-direction: column;
+    font-size: 14px;
+  }
+  #admin-panel h3 {
+    margin-top: 0;
+    color: #000080;
+    font-weight: 600;
+    margin-bottom: 0.8rem;
+    text-align: center;
+  }
+  #admin-panel label {
+    display: block;
+    margin-top: 0.8rem;
+    color: #000080dd;
+    font-weight: 600;
+  }
+  #admin-panel input[type="text"],
+  #admin-panel input[type="password"],
+  #admin-panel textarea {
+    width: 100%;
+    font-size: 14px;
+    padding: 6px 8px;
+    border: 1.8px solid #000080;
+    border-radius: 8px;
+    resize: vertical;
+    margin-top: 4px;
+    font-family: 'Poppins', sans-serif;
+  }
+  #admin-panel textarea {
+    min-height: 70px;
+  }
+  #admin-panel input[type="file"] {
+    margin-top: 6px;
+  }
+  #admin-panel button {
+    margin-top: 12px;
+    background: #000080;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    padding: 8px 12px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.3s ease;
+  }
+  #admin-panel button:hover {
+    background: #000066;
+  }
+  #admin-message {
+    margin-top: 10px;
+    color: #cc0000;
+    font-weight: 600;
+  }
+  #admin-success {
+    margin-top: 10px;
+    color: green;
+    font-weight: 600;
+  }
+  .admin-section {
+    margin-bottom: 1.5rem;
+    border-bottom: 1px solid #00008033;
+    padding-bottom: 1rem;
+  }
+  .project-admin {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    margin-top: 0.6rem;
+  }
+  .project-admin img {
+    width: 50px;
+    height: 40px;
+    border-radius: 8px;
+    object-fit: cover;
+    border: 2px solid #000080;
+    cursor: default;
+  }
+  .project-admin button {
+    background: #cc0000;
+    border-radius: 6px;
+    padding: 4px 8px;
+    font-weight: 700;
+    font-size: 12px;
+    transition: background 0.3s ease;
+  }
+  .project-admin button:hover {
+    background: #990000;
+  }
+  #logout-btn {
+    background: #cc0000;
+    margin-top: 0rem;
+  }
+
+  /* Login Form */
+  #login-form {
+    display: flex;
+    flex-direction: column;
+  }
+  #login-form input[type="password"] {
+    margin-bottom: 12px;
+  }
+
+  /* Responsive */
+  @media (max-width: 480px) {
+    #profile {
+      flex-direction: column;
+      text-align: center;
+    }
+    #profile-pic {
+      margin: 0 auto;
+    }
+  }
+</style>
+</head>
+<body>
+<header>
+  <h1 id="profile-name">Your Name</h1> <!-- Changed to have id="profile-name" -->
+  <img id="topbar-image" src="https://images.unsplash.com/photo-1515377905703-c4788e51af15?auto=format&fit=crop&w=300&q=80" alt="Top Bar Banner" />
+</header>
+<main>
+  <section id="profile">
+    <img id="profile-pic" src="https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=400&q=80" alt="Profile Picture" />
+    <p id="profile-text">Hi, I'm a passionate Graphic Designer who creates eye-catching visuals and designs for brands and products. Skilled in Adobe Photoshop, Illustrator, branding, and digital design.</p>
+  </section>
+
+  <section id="projects-section">
+    <h2>My Projects</h2>
+    <div id="projects-grid" aria-live="polite" aria-relevant="additions removals"></div>
+  </section>
+</main>
+
+<!-- Modal for big project image -->
+<div id="modal" aria-modal="true" role="dialog" tabindex="-1">
+  <span id="modalClose" title="Close">&times;</span>
+  <img src="" alt="Expanded project image" />
+</div>
+
+<!-- Admin Toggle Button -->
+<button id="admin-toggle-btn" aria-label="Open admin panel" title="Admin Panel">ADM</button>
+
+<!-- Admin Panel -->
+<aside id="admin-panel" aria-label="Admin Panel">
+  <h3>Admin Panel</h3>
+  <div id="admin-content">
+
+    <!-- Login form initially shown -->
+    <form id="login-form" aria-label="Admin login form">
+      <label for="admin-password">Enter Password:</label>
+      <input type="password" id="admin-password" autocomplete="current-password" />
+      <button type="submit">Login</button>
+      <div id="admin-message" role="alert"></div>
+    </form>
+
+    <!-- Admin controls (hidden until logged in) -->
+    <div id="admin-controls" style="display:none;">
+      <div class="admin-section">
+        <label for="profile-name-input">Change Your Name:</label>
+        <input type="text" id="profile-name-input" placeholder="Enter your name" />
+        <button id="update-profile-name-btn">Update Name</button>
+      </div>
+      <div class="admin-section">
+        <label for="profile-pic-input">Change Profile Picture (JPG only):</label>
+        <input type="file" id="profile-pic-input" accept="image/jpeg" />
+        <button id="update-profile-pic-btn">Update Picture</button>
+      </div>
+      <div class="admin-section">
+        <label for="profile-text-input">Change Profile Description:</label>
+        <textarea id="profile-text-input" rows="3"></textarea>
+        <button id="update-profile-text-btn">Update Description</button>
+      </div>
+      <div class="admin-section">
+        <label for="topbar-image-input">Change Top Bar Image (JPG only):</label>
+        <input type="file" id="topbar-image-input" accept="image/jpeg" />
+        <button id="update-topbar-image-btn">Update Top Bar Image</button>
+      </div>
+      <div class="admin-section">
+        <label for="project-image-input">Add Project Image(s) (JPG only):</label>
+        <input type="file" id="project-image-input" accept="image/jpeg" multiple />
+        <label for="project-title-input">Project Title:</label>
+        <input type="text" id="project-title-input" placeholder="Enter project title" />
+        <button id="add-project-btn">Add Project(s)</button>
+      </div>
+      <div class="admin-section">
+        <strong>Manage Projects</strong>
+        <div id="projects-admin-list"></div>
+      </div>
+      <div class="admin-section">
+        <label for="current-password">Current Password:</label>
+        <input type="password" id="current-password" autocomplete="current-password" />
+        <label for="new-password">New Password:</label>
+        <input type="password" id="new-password" autocomplete="new-password" />
+        <label for="confirm-password">Confirm New Password:</label>
+        <input type="password" id="confirm-password" autocomplete="new-password" />
+        <button id="change-password-btn">Change Password</button>
+      </div>
+      <button id="logout-btn">Logout</button>
+      <div id="admin-success" role="alert" style="color:green;"></div>
+    </div>
+  </div>
+</aside>
+
+<script>
+  (() => {
+    const adminToggleBtn = document.getElementById('admin-toggle-btn');
+    const adminPanel = document.getElementById('admin-panel');
+    const loginForm = document.getElementById('login-form');
+    const adminPasswordInput = document.getElementById('admin-password');
+    const adminMessage = document.getElementById('admin-message');
+    const adminControls = document.getElementById('admin-controls');
+    const adminSuccess = document.getElementById('admin-success');
+    const logoutBtn = document.getElementById('logout-btn');
+
+    const profileName = document.getElementById('profile-name');
+    const profileNameInput = document.getElementById('profile-name-input');
+    const updateProfileNameBtn = document.getElementById('update-profile-name-btn');
+
+    const profilePic = document.getElementById('profile-pic');
+    const profileText = document.getElementById('profile-text');
+    const topbarImage = document.getElementById('topbar-image');
+
+    const profilePicInput = document.getElementById('profile-pic-input');
+    const updateProfilePicBtn = document.getElementById('update-profile-pic-btn');
+    const profileTextInput = document.getElementById('profile-text-input');
+    const updateProfileTextBtn = document.getElementById('update-profile-text-btn');
+    const topbarImageInput = document.getElementById('topbar-image-input');
+    const updateTopbarImageBtn = document.getElementById('update-topbar-image-btn');
+
+    const projectImageInput = document.getElementById('project-image-input');
+    const projectTitleInput = document.getElementById('project-title-input');
+    const addProjectBtn = document.getElementById('add-project-btn');
+    const projectsGrid = document.getElementById('projects-grid');
+    const projectsAdminList = document.getElementById('projects-admin-list');
+
+    const currentPasswordInput = document.getElementById('current-password');
+    const newPasswordInput = document.getElementById('new-password');
+    const confirmPasswordInput = document.getElementById('confirm-password');
+    const changePasswordBtn = document.getElementById('change-password-btn');
+
+    const modal = document.getElementById('modal');
+    const modalImg = modal.querySelector('img');
+    const modalClose = document.getElementById('modalClose');
+
+    function b64Encode(str) {return btoa(unescape(encodeURIComponent(str)));}
+    function b64Decode(str) {return decodeURIComponent(escape(atob(str)));}
+    function getStoredPassword() {
+      return localStorage.getItem('adminPassword') || b64Encode('admin123');
+    }
+    function savePassword(pass) {
+      localStorage.setItem('adminPassword', b64Encode(pass));
+    }
+    function checkPassword(pass) {
+      return b64Encode(pass) === getStoredPassword();
+    }
+
+    function saveProfileName(name) {
+      localStorage.setItem('profileName', name);
+    }
+    function getProfileName() {
+      return localStorage.getItem('profileName') || 'Your Name';
+    }
+    function saveProfilePic(base64) {
+      localStorage.setItem('profilePic', base64);
+    }
+    function saveProfileText(text) {
+      localStorage.setItem('profileText', text);
+    }
+    function saveTopbarImage(base64) {
+      localStorage.setItem('topbarImage', base64);
+    }
+    function saveProjects(projects) {
+      localStorage.setItem('projects', JSON.stringify(projects));
+    }
+    function getProjects() {
+      const p = localStorage.getItem('projects');
+      if (!p) return [];
+      try {
+        return JSON.parse(p);
+      } catch(e) {
+        return [];
+      }
+    }
+
+    // Load saved data or fallback defaults
+    function loadProfile() {
+      profileName.textContent = getProfileName();
+      profileNameInput.value = getProfileName();
+
+      const pic = localStorage.getItem('profilePic');
+      if (pic) profilePic.src = pic;
+
+      const text = localStorage.getItem('profileText');
+      if (text) profileText.textContent = text;
+
+      const tb = localStorage.getItem('topbarImage');
+      if (tb) topbarImage.src = tb;
+
+      profileTextInput.value = profileText.textContent;
+    }
+
+    // Render projects grid and admin list
+    function renderProjects() {
+      const projects = getProjects();
+      projectsGrid.innerHTML = '';
+      projectsAdminList.innerHTML = '';
+      projects.forEach((proj, i) => {
+        const projCard = document.createElement('div');
+        projCard.className = 'project-card';
+        projCard.setAttribute('tabindex', '0');
+        projCard.setAttribute('role', 'button');
+        projCard.setAttribute('aria-label', 'Open project image ' + (i+1));
+
+        const img = document.createElement('img');
+        img.src = proj.image;
+        img.alt = `Project image ${i+1}`;
+        projCard.appendChild(img);
+
+        const title = document.createElement('div');
+        title.textContent = proj.title || '';
+        title.style.textAlign = 'center';
+        title.style.marginTop = '4px';
+        title.style.color = '#000080cc';
+        title.style.fontWeight = '600';
+        title.style.fontSize = '0.9rem';
+        projCard.appendChild(title);
+
+        projCard.addEventListener('click', () => openModal(proj.image));
+        projCard.addEventListener('keypress', e => {
+          if (e.key === 'Enter' || e.key === ' ') {
+            e.preventDefault();
+            openModal(proj.image);
+          }
+        });
+        projectsGrid.appendChild(projCard);
+
+        const adminItem = document.createElement('div');
+        adminItem.className = 'project-admin';
+        const adminImg = document.createElement('img');
+        adminImg.src = proj.image;
+        adminImg.alt = `Project image ${i+1}`;
+        adminItem.appendChild(adminImg);
+        const titleText = document.createElement('span');
+        titleText.textContent = proj.title || '(no title)';
+        titleText.style.flex = '1';
+        titleText.style.color = '#000080cc';
+        adminItem.appendChild(titleText);
+        const delBtn = document.createElement('button');
+        delBtn.textContent = 'Delete';
+        delBtn.title = 'Delete project image ' + (i+1);
+        delBtn.addEventListener('click', () => deleteProject(i));
+        adminItem.appendChild(delBtn);
+        projectsAdminList.appendChild(adminItem);
+      });
+    }
+
+    function openModal(src) {
+      modalImg.src = src;
+      modal.style.display = 'flex';
+      modal.focus();
+    }
+    function closeModal() {
+      modal.style.display = 'none';
+      modalImg.src = '';
+    }
+    modalClose.addEventListener('click', closeModal);
+    modal.addEventListener('click', e => {
+      if (e.target === modal) closeModal();
+    });
+    window.addEventListener('keydown', e => {
+      if (e.key === 'Escape' && modal.style.display === 'flex') {
+        closeModal();
+      }
+    });
+
+    // Admin login
+    loginForm.addEventListener('submit', e => {
+      e.preventDefault();
+      const passVal = adminPasswordInput.value.trim();
+      if (checkPassword(passVal)) {
+        loginSuccess();
+      } else {
+        adminMessage.textContent = 'Incorrect password!';
+        adminSuccess.textContent = '';
+      }
+    });
+
+    // On successful login
+    function loginSuccess() {
+      adminMessage.textContent = '';
+      loginForm.style.display = 'none';
+      adminControls.style.display = 'flex';
+      adminToggleBtn.textContent = 'X';
+      loadProfile();
+      renderProjects();
+    }
+
+    // Logout
+    logoutBtn.addEventListener('click', () => {
+      adminControls.style.display = 'none';
+      loginForm.style.display = 'flex';
+      adminToggleBtn.textContent = 'ADM';
+      adminPasswordInput.value = '';
+      adminMessage.textContent = '';
+      adminSuccess.textContent = '';
+    });
+
+    // Toggle admin panel visible
+    adminToggleBtn.addEventListener('click', () => {
+      if (adminPanel.style.display === 'flex') {
+        adminPanel.style.display = 'none';
+        adminToggleBtn.textContent = 'ADM';
+      } else {
+        adminPanel.style.display = 'flex';
+        // If not logged in, show login form, else admin controls
+        if (adminControls.style.display === 'flex') {
+          adminToggleBtn.textContent = 'X';
+        } else {
+          adminToggleBtn.textContent = 'ADM';
+        }
+      }
+    });
+
+    // Check file is jpg and convert to base64
+    function fileToBase64(file, cb) {
+      if (!file) return cb(null);
+      if (!file.type.match('image/jpeg')) {
+        cb(null, 'jpg only');
+        return;
+      }
+      const reader = new FileReader();
+      reader.onload = function(e) { cb(e.target.result); };
+      reader.readAsDataURL(file);
+    }
+
+    // Update profile name
+    updateProfileNameBtn.addEventListener('click', e => {
+      e.preventDefault();
+      const newName = profileNameInput.value.trim();
+      if (!newName) {
+        adminMessage.textContent = 'Name cannot be empty.';
+        adminSuccess.textContent = '';
+        return;
+      }
+      profileName.textContent = newName;
+      saveProfileName(newName);
+      adminMessage.textContent = '';
+      adminSuccess.textContent = 'Name updated.';
+    });
+
+    // Update profile pic
+    updateProfilePicBtn.addEventListener('click', e => {
+      e.preventDefault();
+      const file = profilePicInput.files[0];
+      fileToBase64(file, (data) => {
+        if (data === 'jpg only') {
+          adminMessage.textContent = 'Only JPG images allowed for profile picture.';
+          adminSuccess.textContent = '';
+        } else if (data) {
+          profilePic.src = data;
+          saveProfilePic(data);
+          adminMessage.textContent = '';
+          adminSuccess.textContent = 'Profile picture updated.';
+        } else {
+          adminMessage.textContent = 'No file chosen for profile picture.';
+          adminSuccess.textContent = '';
+        }
+      });
+    });
+
+    // Update profile description text
+    updateProfileTextBtn.addEventListener('click', e => {
+      e.preventDefault();
+      const newText = profileTextInput.value.trim();
+      if (!newText) {
+        adminMessage.textContent = 'Description text cannot be empty.';
+        adminSuccess.textContent = '';
+        return;
+      }
+      profileText.textContent = newText;
+      saveProfileText(newText);
+      adminMessage.textContent = '';
+      adminSuccess.textContent = 'Profile description updated.';
+    });
+
+    // Update top bar image
+    updateTopbarImageBtn.addEventListener('click', e => {
+      e.preventDefault();
+      const file = topbarImageInput.files[0];
+      fileToBase64(file, (data) => {
+        if (data === 'jpg only') {
+          adminMessage.textContent = 'Only JPG images allowed for top bar image.';
+          adminSuccess.textContent = '';
+        } else if (data) {
+          topbarImage.src = data;
+          saveTopbarImage(data);
+          adminMessage.textContent = '';
+          adminSuccess.textContent = 'Top bar image updated.';
+        } else {
+          adminMessage.textContent = 'No file chosen for top bar image.';
+          adminSuccess.textContent = '';
+        }
+      });
+    });
+
+    // Add project image(s)
+    addProjectBtn.addEventListener('click', e => {
+      e.preventDefault();
+      const files = Array.from(projectImageInput.files);
+      if (!files.length) {
+        adminMessage.textContent = 'No files chosen for project images.';
+        adminSuccess.textContent = '';
+        return;
+      }
+      const title = projectTitleInput.value.trim();
+      if (!title) {
+        adminMessage.textContent = 'Please enter a project title.';
+        adminSuccess.textContent = '';
+        return;
+      }
+      let projects = getProjects();
+      let loaded = 0;
+      let errors = 0;
+      files.forEach(file => {
+        if (!file.type.match('image/jpeg')) {
+          errors++;
+          loaded++;
+          return;
+        }
+        const reader = new FileReader();
+        reader.onload = function(e) {
+          projects.push({image: e.target.result, title});
+          loaded++;
+          if (loaded === files.length) {
+            saveProjects(projects);
+            renderProjects();
+            projectImageInput.value = '';
+            projectTitleInput.value = '';
+            if(errors > 0) {
+              adminMessage.textContent = errors + ' files were skipped as they are not JPG.';
+            } else {
+              adminMessage.textContent = '';
+            }
+            adminSuccess.textContent = 'Project(s) added.';
+          }
+        };
+        reader.readAsDataURL(file);
+      });
+    });
+
+    // Delete project image by index
+    function deleteProject(index) {
+      if (!confirm('Are you sure you want to delete this project?')) return;
+      let projects = getProjects();
+      projects.splice(index, 1);
+      saveProjects(projects);
+      renderProjects();
+      adminSuccess.textContent = 'Project deleted.';
+      adminMessage.textContent = '';
+    }
+
+    // Change password
+    changePasswordBtn.addEventListener('click', e => {
+      e.preventDefault();
+      const current = currentPasswordInput.value.trim();
+      const newPass = newPasswordInput.value.trim();
+      const confirmPass = confirmPasswordInput.value.trim();
+      if (!current || !newPass || !confirmPass) {
+        adminMessage.textContent = 'All password fields are required.';
+        adminSuccess.textContent = '';
+        return;
+      }
+      if (!checkPassword(current)) {
+        adminMessage.textContent = 'Current password is incorrect.';
+        adminSuccess.textContent = '';
+        return;
+      }
+      if (newPass !== confirmPass) {
+        adminMessage.textContent = 'New passwords do not match.';
+        adminSuccess.textContent = '';
+        return;
+      }
+      if (newPass.length < 5) {
+        adminMessage.textContent = 'New password must be at least 5 characters.';
+        adminSuccess.textContent = '';
+        return;
+      }
+      savePassword(newPass);
+      currentPasswordInput.value = '';
+      newPasswordInput.value = '';
+      confirmPasswordInput.value = '';
+      adminMessage.textContent = '';
+      adminSuccess.textContent = 'Password changed successfully.';
+    });
+
+    // Initialize page
+    function init() {
+      loadProfile();
+      renderProjects();
+    }
+    init();
+  })();
+</script>
+</body>
+</html>
